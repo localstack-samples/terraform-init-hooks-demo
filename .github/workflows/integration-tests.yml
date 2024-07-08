@@ -1,4 +1,4 @@
-name: Testcontainers End-to-End Testing
+name: Testcontainers Integration Testing
 
 on:
   push:
@@ -30,7 +30,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y docker-compose
 
-      - name: Build and test with Maven
+      - name: Run tests
         env:
-          LOCALSTACK_AUTH_KEY: ${{ secrets.LOCALSTACK_AUTH_KEY }}
+          LOCALSTACK_AUTH_TOKEN: ${{ secrets.LOCALSTACK_AUTH_TOKEN }}
         run: mvn test
