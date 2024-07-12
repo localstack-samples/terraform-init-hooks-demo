@@ -11,7 +11,6 @@ import org.apache.http.message.BasicHeader;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
@@ -51,10 +50,6 @@ public class ProductAppTests extends LocalStackConfig {
         apiGWId = items.getJSONObject(0).getString("id");
     }
 
-    @AfterAll
-    public static void cleanUp() {
-        LocalStackConfig.cleanLambdaContainers();
-    }
 
     @Test
     @Order(1)

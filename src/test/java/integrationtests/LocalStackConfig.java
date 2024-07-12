@@ -13,7 +13,6 @@ import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.lambda.LambdaClient;
 
-import java.io.IOException;
 import java.net.URI;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -32,7 +31,6 @@ public class LocalStackConfig {
           .withFileSystemBind("./terraform",
               "/etc/localstack/init/ready.d")
           .withEnv("DEBUG", "1")
-          .withEnv("LAMBDA_KEEPALIVE_MS", "10000")
           .withStartupTimeout(Duration.of(2, ChronoUnit.MINUTES));
 
   protected static final Logger LOGGER = LoggerFactory.getLogger(LocalStackConfig.class);
@@ -54,22 +52,6 @@ public class LocalStackConfig {
         .build();
   }
 
-  protected static void cleanLambdaContainers() {
-    try {
-      String scriptPath = "src/test/resources/delete_lambda_containers.sh";
-      // ProcessBuilder to execute the script
-      ProcessBuilder processBuilder = new ProcessBuilder(scriptPath);
-      // redirect the process's output to the java process's output
-      processBuilder.inheritIO();
-      Process process = processBuilder.start();
-      // wait for the process to complete
-      int exitCode = process.waitFor();
-      // print the exit code for debugging purposes
-      System.out.println("Script exited with code: " + exitCode);
-    } catch (IOException | InterruptedException e) {
-      e.printStackTrace();
-    }
-  }
 }
 
 
