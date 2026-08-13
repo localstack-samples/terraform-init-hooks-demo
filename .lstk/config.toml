@@ -1,0 +1,12 @@
+[[containers]]
+type = "aws"
+tag  = "latest"
+port = "4566"
+env  = ["terraform-init"]
+volumes = [
+    "../terraform:/etc/localstack/init/ready.d",
+]
+
+[env.terraform-init]
+EXTENSION_AUTO_INSTALL = "localstack-extension-terraform-init"
+DEBUG = "1"
