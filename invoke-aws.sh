@@ -1,6 +1,8 @@
 #!/bin/bash
 
-rest_api_id=$(cd terraform; tflocal output --raw rest_api_id)
+# This script targets real AWS, so it reads the output from plain Terraform
+# state rather than through a LocalStack wrapper.
+rest_api_id=$(cd terraform; terraform output --raw rest_api_id)
 echo ${rest_api_id}
 
 curl --location "https://${rest_api_id}.execute-api.us-east-1.amazonaws.com/dev/productApi" \

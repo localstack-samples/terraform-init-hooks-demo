@@ -1,6 +1,9 @@
 #!/bin/bash
 
-rest_api_id=$(cd terraform; tflocal output --raw rest_api_id)
+# Terraform runs inside the LocalStack container (via the init hook), so its
+# providers are not installed on the host. Read the API ID from LocalStack itself.
+rest_api_id=$(lstk aws apigateway get-rest-apis \
+  --query 'items[?name==`product-api-gateway`].id' --output text)
 echo ${rest_api_id}
 
 curl --location "http://${rest_api_id}.execute-api.localhost.localstack.cloud:4566/dev/productApi" \

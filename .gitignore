@@ -16,3 +16,4 @@
 /target/surefire-reports/
 /target/test-classes/
 /target/original-product-lambda.jar
+/.lstk/lstk.log

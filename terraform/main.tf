@@ -1,8 +1,8 @@
 terraform {
   required_providers {
     aws = {
-      source  = "hashicorp/aws"
-      version = "5.44.0"
+      source = "hashicorp/aws"
+      version = ">= 6.0, < 6.58"
     }
   }
 }
@@ -195,10 +195,38 @@ resource "aws_api_gateway_deployment" "api_deployment" {
   ]
 
   rest_api_id = aws_api_gateway_rest_api.api.id
-  stage_name  = "dev"
+
+  # Redeploy whenever the API surface changes. Without this, edits to the
+  # methods or integrations would not be picked up by an existing deployment.
+  triggers = {
+    redeployment = sha1(jsonencode([
+      aws_api_gateway_resource.product_api.id,
+      aws_api_gateway_method.get_product.id,
+      aws_api_gateway_method.add_product.id,
+      aws_api_gateway_integration.get_product_integration.id,
+      aws_api_gateway_integration.add_product_integration.id,
+    ]))
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+# The AWS provider v6 removed the inline `stage_name` argument from
+# aws_api_gateway_deployment; the stage is now its own resource.
+resource "aws_api_gateway_stage" "dev" {
+  rest_api_id   = aws_api_gateway_rest_api.api.id
+  deployment_id = aws_api_gateway_deployment.api_deployment.id
+  stage_name    = "dev"
 }
 
 output "rest_api_id" {
   description = "Rest API id"
   value       = aws_api_gateway_rest_api.api.id
+}
+
+output "stage_name" {
+  description = "API Gateway stage name"
+  value       = aws_api_gateway_stage.dev.stage_name
 }
