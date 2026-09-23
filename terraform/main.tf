@@ -9,6 +9,12 @@ terraform {
 
 provider "aws" {
   region = "us-east-1"
+
+  default_tags {
+    tags = {
+      aws-apn-id = "pc:9yq38ki5jw5mas7jhjthpgveo"
+    }
+  }
 }
 
 resource "aws_dynamodb_table" "Products" {
